@@ -68,13 +68,11 @@ import { RouterLink, RouterView } from 'vue-router'
           </RouterLink>
 
           <div class="hidden sm:flex">
-            <a
-              class="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600"
-              href="/"
-            >
-              Register
-            </a>
-          </div>
+            <RouterLink class="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow" to="/register">
+            Register
+          </RouterLink>
+ 
+         </div>
         </div>
 
         <div class="block md:hidden">
