@@ -15,7 +15,7 @@ const router = createRouter({
       path: '/login',
       name: 'login',
 
-      component: () => import('../components/Login.vue')
+      component: () => import('../views/LoginView.vue')
     },
     {
     path: '/register',
@@ -27,7 +27,7 @@ const router = createRouter({
       path: '/',
       name: 'BookList',
 
-      component: () => import('../components/BookList.vue')
+      component: () => import('../views/LoginView.vue')
     },
     {
       path: '/:pathMatch(.*)*',
