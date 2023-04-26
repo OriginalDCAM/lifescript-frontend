@@ -1,3 +1,10 @@
+<script setup>
+import LoginVue from '@/components/Login.vue';
+
+</script>
+
 <template>
-    <h1>Login</h1>
+  <section class="flex flex-row items-center mt-20">
+    <LoginVue />
+  </section>
 </template>
