@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-row lg:w-2/4 space-y-4 m-auto overflow-hidden bg-gray-50 border rounded-2xl">
-    <div class="w-1/2 img">
+  <div class="flex flex-row lg:w-2/4  space-y-4 m-auto overflow-hidden bg-gray-50 border rounded-2xl">
+    <div class="w-1/2 hidden img sm:block">
     </div>
-    <div class="w-1/2 space-y-6 flex flex-col items-center justify-center">
+    <div class="w-full p-4 space-y-6 flex flex-col items-center justify-center sm:w-1/2">
       <p><span class="text-lg font-bold font-serif">Sign In</span></p>
       <InputItem v-model="email" type="email" name="Email" />
       <InputItem v-model="password" type="password" name="Password" />
@@ -25,12 +25,15 @@ let password = ref();
 
 function login() {
   axios.post('http://localhost/api/v1/users/login', {
+    withCredentials: true,
     email: email.value,
     password: password.value
   })
     .then((response) => {
       message = response.data;
     }).catch((error) => {
+      console.log(email.value);
+      console.log(password.value);
       console.log(error.data);
     });
 }
@@ -41,7 +44,13 @@ function login() {
   background-image: url("https://images.unsplash.com/photo-1556566952-11eff3d06ed4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80");
   background-repeat:no-repeat;
   background-size:contain;
-  height: 40rem;
-  width: 50%;
+  height: auto;
+  width: 40rem;
+}
+@media only screen and (max-width: 600px) {
+  .img {
+  display: none;
+}
+
 }
 </style>
