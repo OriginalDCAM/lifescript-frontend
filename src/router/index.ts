@@ -35,6 +35,12 @@ const router = createRouter({
 
       component: () => import('../components/PageNotFound.vue')
     },
+    {
+      path: '/create-page',
+      name: 'CreatePage',
+
+      component: () => import('../components/Page/CreatePage.vue')
+    },
   ]
 })
 
