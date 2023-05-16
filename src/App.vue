@@ -61,30 +61,36 @@ initializeAuth()
 
           <div class="flex items-center gap-4">
             <div class="sm:flex sm:gap-4">
-              <RouterLink v-if="!isAuthenticated"
-                class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
-                to="/login">
-                Login
-              </RouterLink>
-              <div class="hidden sm:flex">
-                <RouterLink v-if="!isAuthenticated"
+              <div :class="{
+                hidden: user?.isAuthenticated,
+              }">
+                <RouterLink
                   class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
-                  to="/register">
-                  Register
+                  to="/login">
+                  Login
                 </RouterLink>
-
+                  <RouterLink
+                    class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
+                    to="/register">
+                    Register
+                  </RouterLink>
               </div>
-              <RouterLink v-if="isAuthenticated"
-                class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
-                to="/dashboard">
-                Dashboard
-              </RouterLink>
-              <RouterLink v-if="isAuthenticated"
-                class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
-                to="/logout">
-                Logout
-              </RouterLink>
+              <div :class="{
+                hidden: !user?.isAuthenticated,
+              }">
+                <RouterLink
+                  class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
+                  to="/dashboard">
+                  Dashboard
+                </RouterLink>
+                <RouterLink
+                  class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
+                  to="/logout">
+                  Logout
+                </RouterLink>
+              </div>
             </div>
+          </div>
 
             <div class="block md:hidden">
               <button class="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
@@ -96,7 +102,6 @@ initializeAuth()
             </div>
           </div>
         </div>
-      </div>
     </header>
 
 
