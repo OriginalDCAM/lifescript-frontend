@@ -1,15 +1,18 @@
 <template>
-  <div class="flex flex-row lg:w-2/4  space-y-4 m-auto overflow-hidden bg-gray-50 border rounded-2xl">
+  <div class="flex flex-row lg:w-2/4 sm:h-full md:h-full lg:h-full  space-y-4 m-auto overflow-hidden bg-gray-50 border rounded-2xl">
     <div class="w-1/2 hidden img sm:block">
     </div>
     <div class="w-full p-4 space-y-6 flex flex-col items-center justify-center sm:w-1/2">
-      <p><span class="text-lg font-bold font-serif">Sign In</span></p>
-      <InputItem v-model="email" type="email" name="Email" />
-      <InputItem v-model="password" type="password" name="Password" />
-      <button
-        class="inline-block rounded border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring active:bg-indigo-500"
-        @click="login" type="submit">Login</button>
-      <span class="text-teal-600">{{ message }}</span>
+      <p><span class="text-lg font-bold font-serif">Sign in</span></p>
+      <form @submit.stop.prevent="login">
+        <InputItem v-model="email" type="email" name="Email"/>
+        <InputItem v-model="password" type="password" name="Password" />
+        <button
+          class="inline-block rounded border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring active:bg-indigo-500"
+          type="submit">Login</button>
+      </form>
+      <span v-if="successMessage" class="text-teal-600">{{ successMessage }}</span>
+      <span v-else-if="errorMessage" class="text-red-600">{{ errorMessage }}</span>
     </div>
   </div>
 </template>
@@ -18,23 +21,74 @@
 import axios from 'axios'
 import { ref } from 'vue'
 import InputItem from '@/components/InputItem.vue';
+import type { IUser } from '@/types/User';
+import { useRouter } from 'vue-router';
 
-let message = ref();
+let successMessage = ref();
+let errorMessage = ref();
 let email = ref();
 let password = ref();
 
-function login() {
-  axios.post('http://localhost/api/v1/users/login', {
-    withCredentials: true,
+const router = useRouter();
+
+const validateEmail = (email : string) => {
+  // Regular expression to validate email format
+  return /\S+@\S+\.\S+/.test(email);
+}
+
+interface Dictionary<T> {
+  [Key: string]: T;
+}
+
+
+
+
+const login = (): void => {
+  successMessage.value = '';
+  errorMessage.value = '';
+  if (!email.value || !password.value) {
+    errorMessage.value = 'Please fill in all fields';
+    return;
+  }
+
+  if (!validateEmail(email.value)) {
+    errorMessage.value = 'Please enter a valid email address';
+    return;
+  }
+
+  const url : string = 'http://localhost/api/v1/users/login';
+  const data : Dictionary<string> = {
     email: email.value,
     password: password.value
-  })
+  }
+  const config : Dictionary<Dictionary<string> | boolean> = {
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  axios.post(url, data, config)
     .then((response) => {
-      message = response.data;
-    }).catch((error) => {
-      console.log(email.value);
-      console.log(password.value);
-      console.log(error.data);
+      const token = response.data.access_token;
+
+      const user : IUser = {
+        email: response.data.email,
+        username: response.data.username,
+        firstname: response.data.first_name,
+        authenticated: true,
+        token: token
+      }
+
+      localStorage.setItem('token', JSON.stringify(user));
+
+      successMessage.value = 'Login successful';
+
+      router.push({ name: 'Dashboard' });
+    })
+    .catch((error) => {
+      console.error(error);
+      return errorMessage.value = error.response.data['detail'];
     });
 }
 </script>
@@ -51,6 +105,5 @@ function login() {
   .img {
   display: none;
 }
-
 }
 </style>
