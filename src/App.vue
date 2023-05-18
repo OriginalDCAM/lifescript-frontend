@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { useAuth } from '@/composables/useAuthStore'
+import { useRouter } from 'vue-router';
 
-const { user, isAuthenticated, initializeAuth } = useAuth()
+const router = useRouter()
+
+const { isAuthenticated, setIsAuthenticated, initializeAuth } = useAuth()
 
 initializeAuth()
+
+const logout = () => {
+  console.log('logged')
+  setIsAuthenticated(false)
+  router.push({ name: 'login' })
+}
 
 </script>
 
@@ -52,7 +61,6 @@ initializeAuth()
 
                 <li>
                   <a class="text-gray-500 transition hover:text-gray-500/75" href="/">
-                    {{ user?.firstname }}
                   </a>
                 </li>
               </ul>
@@ -62,46 +70,46 @@ initializeAuth()
           <div class="flex items-center gap-4">
             <div class="sm:flex sm:gap-4">
               <div :class="{
-                hidden: user?.isAuthenticated,
+                hidden: isAuthenticated,
               }">
                 <RouterLink
                   class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
                   to="/login">
                   Login
                 </RouterLink>
-                  <RouterLink
-                    class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
-                    to="/register">
-                    Register
-                  </RouterLink>
+                <RouterLink
+                  class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
+                  to="/register">
+                  Register
+                </RouterLink>
               </div>
               <div :class="{
-                hidden: !user?.isAuthenticated,
+                hidden: !isAuthenticated,
               }">
                 <RouterLink
                   class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
                   to="/dashboard">
                   Dashboard
                 </RouterLink>
-                <RouterLink
+                <button
                   class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 text-sm font-medium text-white shadow"
-                  to="/logout">
+                  @click="logout">
                   Logout
-                </RouterLink>
+                </button>
               </div>
             </div>
           </div>
 
-            <div class="block md:hidden">
-              <button class="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
+          <div class="block md:hidden">
+            <button class="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
         </div>
+      </div>
     </header>
 
 
@@ -110,4 +118,8 @@ initializeAuth()
 </template>
 
 
-<style scoped></style>
+<style scoped>
+* {
+  font-family: sans-serif;
+}
+</style>
