@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { User } from '@/helpers/auth'
 import { useAuth } from '@/composables/useAuthStore'
+import { User } from '@/helpers/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,8 +22,8 @@ const router = createRouter({
       meta: { requiresAuth: false }
     },
     {
-    path: '/register',
-    name: 'register',
+      path: '/register',
+      name: 'register',
 
       component: () => import('../components/Register.vue'),
       meta: { requiresAuth: false }
@@ -48,26 +48,33 @@ const router = createRouter({
       component: () => import('../components/Page/CreatePage.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/dashboard',
+      name: 'Dashboard',
+
+      component: () => import('@/views/Dashboard.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/dashboard/users',
+      name: 'UsersOverview',
+
+      component: () => import('@/views/UsersView.vue'),
+      meta: { requiresAuth: true }
+    }
   ]
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from, next) => {
 
-  const { isAuthenticated, initializeAuth } = useAuth()
-
-  initializeAuth()
+  const { isAuthenticated, setIsAuthenticated } = useAuth()
 
 
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-      console.log('User is not authenticated')
-      return { name: 'login' }
-  }
-  else if (!to.meta.requiresAuth && isAuthenticated.value) {
-      console.log('User is authenticated')
-      return
-  }
+    next({ name: 'login' })
+  } else next()
 
-  }
+}
 )
 
 export default router
