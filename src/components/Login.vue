@@ -19,14 +19,12 @@
 </template>
 
 <script lang="ts" setup>
-import axios from 'axios'
 import { ref } from 'vue'
 import InputItem from '@/components/InputItem.vue';
-import type { IUser } from '@/types/User';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuthStore';
 
-const { initializeAuth, isAuthenticated, setIsAuthenticated } = useAuth();
+const { isAuthenticated, loginUser } = useAuth();
 
 let successMessage = ref();
 let errorMessage = ref();
@@ -40,16 +38,7 @@ const validateEmail = (email: string) => {
   return /\S+@\S+\.\S+/.test(email);
 }
 
-interface Dictionary<T> {
-  [Key: string]: T;
-}
-
-if (isAuthenticated.value) {
-  router.push({ name: 'Dashboard' });
-}
-
-
-const login = (): void => {
+const login = async () => {
   successMessage.value = '';
   errorMessage.value = '';
   if (!email.value || !password.value) {
@@ -62,42 +51,11 @@ const login = (): void => {
     return;
   }
 
-  const url: string = 'http://localhost/api/v1/users/login';
-  const data: Dictionary<string> = {
-    email: email.value,
-    password: password.value
+  await loginUser(email.value, password.value);
+
+  if (isAuthenticated.value) {
+    router.push({ name: 'Dashboard' });
   }
-  const config: Dictionary<Dictionary<string> | boolean> = {
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
-
-  axios.post(url, data, config)
-    .then((response) => {
-      const token = response.data.access_token;
-
-      const user: IUser = {
-        email: response.data.email,
-        username: response.data.username,
-        firstname: response.data.first_name,
-        authenticated: true,
-        token: token
-      }
-
-      localStorage.setItem('token', JSON.stringify(token));
-
-      successMessage.value = 'Login successful';
-
-      setIsAuthenticated(true);
-
-      router.push({ name: 'Dashboard' });
-    })
-    .catch((error) => {
-      console.error(error);
-      return errorMessage.value = error.response.data['detail'];
-    });
 }
 </script>
 

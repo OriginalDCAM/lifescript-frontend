@@ -1,18 +1,37 @@
-import type { IUser } from "@/types/User";
 import axios from "axios";
 
-export class User {
+
+export class Auth {
 
     public static async getUser(token: string) {
         return await axios.post('http://localhost/api/v1/users/validate_token', {
             access_token: token,
             token_type: "bearer"
         }).then((res) => {
-            console.log(res.data)
-            return { isAuthenticated: true, ...res.data }
+            return {
+                isAuthenticated: true,
+                user: {
+                    ...res.data
+                }
+            }
         }).catch((err) => {
             console.log(err.response.data)
-            return false;
+            return { isAuthenticated: false, user: null };
+        })
+    }
+
+    public static async login(url: string, data: any, config: any) {
+        return await axios.post(url, data, config).then((res) => {
+            localStorage.setItem('token', JSON.stringify(res.data.access_token));
+            return {
+                isAuthenticated: true,
+                user: {
+                    ...res.data
+                }
+            }
+        }).catch((err) => {
+            console.log(err.response.data)
+            return { isAuthenticated: false, user: null };
         })
     }
 
