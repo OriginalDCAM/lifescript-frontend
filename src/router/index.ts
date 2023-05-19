@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '@/composables/useAuthStore'
-import { User } from '@/helpers/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,14 +64,28 @@ const router = createRouter({
   ]
 })
 
+
+/*  The reason I chose to initialize the auth session in this middleware is,
+    because I want everything that deals with authentication
+    checked everytime the user refreshes the page or visits a new page.  */
 router.beforeEach(async (to, from, next) => {
 
-  const { isAuthenticated, setIsAuthenticated } = useAuth()
+  const { isAuthenticated, setIsAuthenticated, initializeAuth } = useAuth()
 
+  await initializeAuth()
+
+  if (to.fullPath === '/logout') {
+    setIsAuthenticated(false)
+    return next({ name: 'login' })
+  }
+
+  if (to.fullPath === '/login' && isAuthenticated.value) {
+    return next({ name: 'Dashboard' })
+  }
 
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-    next({ name: 'login' })
-  } else next()
+    return next({ name: 'login' })
+  } else return next()
 
 }
 )
