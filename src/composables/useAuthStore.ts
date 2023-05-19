@@ -60,9 +60,9 @@ export function useAuth() {
         if (isAuthenticated) {
             setIsAuthenticated(true);
             state.user = user;
-            return true;
+            return { isAuthenticated }
         }
-        return false;
+        return { status: 404, message: "User not found" };
     }
 
     function setIsAuthenticated(value: boolean) {

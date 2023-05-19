@@ -5,15 +5,20 @@
     </div>
     <div class="w-full p-4 space-y-6 flex flex-col items-center justify-center sm:w-1/2">
       <p><span class="text-lg font-bold font-serif">Sign in</span></p>
-      <form @submit.stop.prevent="login">
-        <InputItem v-model="email" type="email" name="Email" />
-        <InputItem v-model="password" type="password" name="Password" />
+      <form @submit.stop.prevent="login" class="space-y-6">
+        <span class="p-float-label">
+          <InputText id="email" class="p-input-sm" v-model="email" />
+          <label for="email">Email</label>
+        </span>
+        <span class="p-float-label">
+          <InputText id="password" v-model="password" />
+          <label for="password">Password</label>
+        </span>
         <button
           class="inline-block rounded border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring active:bg-indigo-500"
           type="submit">Login</button>
       </form>
-      <span v-if="successMessage" class="text-teal-600">{{ successMessage }}</span>
-      <span v-else-if="errorMessage" class="text-red-600">{{ errorMessage }}</span>
+      <Message v-if="errorMessage" severity="error">{{ errorMessage }}</Message>
     </div>
   </div>
 </template>
@@ -23,6 +28,8 @@ import { ref } from 'vue'
 import InputItem from '@/components/InputItem.vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuthStore';
+import Message from 'primevue/message';
+import InputText from 'primevue/inputtext';
 
 const { isAuthenticated, loginUser } = useAuth();
 
@@ -51,11 +58,18 @@ const login = async () => {
     return;
   }
 
-  await loginUser(email.value, password.value);
+  const { status, message } = await loginUser(email.value, password.value);
+
+  if (status === 404) {
+    errorMessage.value = message;
+    return;
+  }
 
   if (isAuthenticated.value) {
     router.push({ name: 'Dashboard' });
   }
+
+
 }
 </script>
 
