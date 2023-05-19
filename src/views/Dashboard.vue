@@ -8,7 +8,7 @@
         <div class="w-full md:w-full bg-slate-100">
             <div class="card flex justify-content-center">
             </div>
-            <p>Section 2</p>
+            <p></p>
         </div>
     </main>
 </template>
@@ -20,9 +20,6 @@ import PanelMenu from 'primevue/panelmenu';
 
 const { user } = useAuth();
 
-
-
-let name = user.value?.firstname;
 const items = ref([
     {
         label: 'Users',

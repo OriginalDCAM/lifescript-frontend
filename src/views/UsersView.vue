@@ -6,8 +6,8 @@
             </div>
         </div>
         <div class="w-full md:w-full bg-slate-100">
-            <div class="card flex justify-content-center">
-            </div>
+            <p>Welcome, {{ name }}</p>
+
             <p>Here is a datagrid with all the users</p>
             <DataTable :value="users" tableStyle="min-width: 50rem">
                 <Column field="first_name" header="First Name"></Column>
@@ -15,7 +15,6 @@
                 <Column field="email" header="Email"></Column>
                 <Column field="is_active" header="Active"></Column>
             </DataTable>
-
         </div>
     </main>
 </template>
@@ -26,15 +25,13 @@ import { ref } from 'vue';
 import PanelMenu from 'primevue/panelmenu';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import ColumnGroup from 'primevue/columngroup';   // optional
-import Row from 'primevue/row';                   // optional
 
 
 const { user } = useAuth();
 
 
 
-let name = user.value?.firstname;
+let name = user.value?.first_name;
 const items = ref([
     {
         label: 'Users',
