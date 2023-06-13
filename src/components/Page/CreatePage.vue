@@ -1,21 +1,18 @@
 <template>
-    <div class="h-screen w-full flex flex-col justify-center items-center space-y-4 font-mono">
-        <input type="text" class="bg-gray-100 border rounded-xl w-1/2 h-10">
-        <textarea v-model="length" @keydown="update" class="bg-gray-100 border rounded-xl w-1/2 h-1/2" name="" id="MyID" cols="30" rows="10"></textarea>
-        <div v-html="length"></div>
+    <div class="h-screen w-full flex flex-row space-y-4 font-mono">
+        <div class="w-1/2">
+            <Editor v-model="body"   class="h-3/4" />
+        </div>
+        <div v-html="body" class="w-1/2"></div>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import Editor from 'primevue/editor';
 
-let length = ref('');
+let body = ref('');
 
-function update() {
-    console.log(length.value);
-}
 </script>
 
-<style lang="css" scoped>
-
-</style>
+<style lang="css" scoped></style>

@@ -20,7 +20,14 @@ export class Auth {
         })
     }
 
-    public static async login(url: string, data: any, config: any) {
+    public static async login(data: any) {
+        const url: string = 'http://localhost/api/v1/users/login';
+        const config = {
+            withCredentials: true as boolean,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
         return await axios.post(url, data, config).then((res) => {
             localStorage.setItem('token', JSON.stringify(res.data.access_token));
             return {

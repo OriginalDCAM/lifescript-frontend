@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { useAuth } from '@/composables/useAuthStore'
-import { useRouter } from 'vue-router';
 
-const router = useRouter()
-
-const { isAuthenticated, setIsAuthenticated, initializeAuth } = useAuth()
+const { isAuthenticated } = useAuth()
 
 
 </script>
@@ -60,7 +57,7 @@ const { isAuthenticated, setIsAuthenticated, initializeAuth } = useAuth()
             </nav>
           </div>
 
-          <div class="flex items-center gap-4">
+          <div class="items-center gap-4 hidden md:flex">
             <div class="sm:flex sm:gap-4">
               <div class="space-x-2" :class="{
                 hidden: isAuthenticated,

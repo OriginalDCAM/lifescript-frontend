@@ -1,35 +1,29 @@
 <template>
-    <main class="w-full flex flex-row h-full ">
-        <div class="hidden sm:block sm:min-w-3/6 md:w-2/6 lg:w-2/12 bg-slate-50 p-4">
-            <div class="w-11/12 bg-slate-100 h-full border rounded-xl">
-                <PanelMenu :model="items" />
-            </div>
-        </div>
-        <div class="w-full md:w-full bg-slate-100">
-            <p>Welcome, {{ name }}</p>
+    <p>Welcome, {{ name }}</p>
 
-            <p>Here is a datagrid with all the users</p>
-            <DataTable :value="users" tableStyle="min-width: 50rem">
-                <Column field="first_name" header="First Name"></Column>
-                <Column field="username" header="Username"></Column>
-                <Column field="email" header="Email"></Column>
-                <Column field="is_active" header="Active"></Column>
-            </DataTable>
-        </div>
-    </main>
+    <p>Here is a datagrid with all the users</p>
+    <DataTable :value="users" tableStyle="min-width: 50rem">
+        <template #empty> No customers found. </template>
+        <template #loading> Loading customers data. Please wait. </template>
+        <Column>
+            <template #body="{data}">
+                <div class="space-x-2">
+                <a :href='"edit/delete/" + data.id'><i class="pi pi-trash" style="font-size: 1rem;"></i></a>
+                    <a :href="'users/edit/' + data.id"><i class="pi pi-pencil" style="font-size: 1rem;"></i></a>
+                </div>
+            </template>
+        </Column>
+        <Column v-for="col in columns" :key="col.field" :field="col.field" :header="col.header" :sortable="true" :filter="true" :filterMatchMode="'contains'"></Column>
+    </DataTable>
 </template>
 
 <script lang="ts" setup>
 import { useAuth } from '@/composables/useAuthStore';
-import { ref } from 'vue';
-import PanelMenu from 'primevue/panelmenu';
+import { onMounted, ref } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
-
 const { user } = useAuth();
-
-
 
 let name = user.value?.first_name;
 const items = ref([
@@ -50,6 +44,13 @@ const items = ref([
     }
 ])
 
+const columns = [
+    { field: 'id', header: 'Id' },
+    { field: 'first_name', header: 'First Name' },
+    { field: 'username', header: 'Username' },
+    { field: 'email', header: 'Email' }
+];
+
 let users = ref();
 
 const FetchUsers = () => {
@@ -61,8 +62,10 @@ const FetchUsers = () => {
         })
         .catch(err => console.log(err));
 }
+onMounted(() => {
+    FetchUsers();
+});
 
-FetchUsers()
 
 </script>
 

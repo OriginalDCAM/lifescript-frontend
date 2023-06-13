@@ -6,9 +6,9 @@
             </div>
         </div>
         <div class="w-full md:w-full bg-slate-100">
-            <div class="card flex justify-content-center">
+            <div class="card flex justify-content-center flex-col">
+                <router-view></router-view>
             </div>
-            <p></p>
         </div>
     </main>
 </template>
@@ -28,7 +28,7 @@ const items = ref([
             {
                 label: 'View users table',
                 icon: 'pi pi-fw pi-users',
-                to: 'dashboard/users',
+                to: { name: 'users-view' },
                 preventDefault: false,
             },
             {

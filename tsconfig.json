@@ -3,11 +3,12 @@
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
     "baseUrl": ".",
+    "allowJs": true,
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+  "ignoreDeprecations": "5.0",
   },
-
   "references": [
     {
       "path": "./tsconfig.config.json"

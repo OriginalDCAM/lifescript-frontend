@@ -11,12 +11,12 @@
           <label for="email">Email</label>
         </span>
         <span class="p-float-label">
-          <InputText id="password" v-model="password" />
+          <Password v-model="password" :feedback="false" />
           <label for="password">Password</label>
         </span>
-        <button
-          class="inline-block rounded border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring active:bg-indigo-500"
-          type="submit">Login</button>
+        <div class="inline-flex justify-center w-full">
+          <Button label="Login" type="submit" class="w-full md:w-full" />
+        </div>
       </form>
       <Message v-if="errorMessage" severity="error">{{ errorMessage }}</Message>
     </div>
@@ -25,11 +25,13 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import InputItem from '@/components/InputItem.vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuthStore';
+
+import Button from 'primevue/button';
 import Message from 'primevue/message';
 import InputText from 'primevue/inputtext';
+import Password from 'primevue/password';
 
 const { isAuthenticated, loginUser } = useAuth();
 
@@ -38,12 +40,13 @@ let errorMessage = ref();
 let email = ref();
 let password = ref();
 
-const router = useRouter();
 
 const validateEmail = (email: string) => {
   // Regular expression to validate email format
   return /\S+@\S+\.\S+/.test(email);
 }
+
+const router = useRouter();
 
 const login = async () => {
   successMessage.value = '';
@@ -66,7 +69,7 @@ const login = async () => {
   }
 
   if (isAuthenticated.value) {
-    router.push({ name: 'Dashboard' });
+    router.push({ name: 'dashboard' });
   }
 
 

@@ -49,16 +49,37 @@ const router = createRouter({
     },
     {
       path: '/dashboard',
-      name: 'Dashboard',
+      children: [
+        {
+          path: '/users',
+          name: 'users-view',
+          component: () => import('@/views/UsersView.vue'),
+          children: [
+            {
+              path: 'create',
+              name: 'create-user',
+              component: () => import('@/components/User/CreateUser.vue'),
+            },
+            {
+              path: 'edit/:id',
+              name: 'edit-user',
+              component: () => import('@/components/User/EditUser.vue'),
+            },
+            {
+              path: 'view/:id',
+              name: 'view-user',
+              component: () => import('@/components/User/ViewUser.vue'),
+            }
+          ]
+        },
+        {
+          path: '',
+          name: 'dashboard',
+          component: () => import('@/components/Dashboard/Index.vue'),
+        },
+      ],
 
       component: () => import('@/views/Dashboard.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/dashboard/users',
-      name: 'UsersOverview',
-
-      component: () => import('@/views/UsersView.vue'),
       meta: { requiresAuth: true }
     }
   ]

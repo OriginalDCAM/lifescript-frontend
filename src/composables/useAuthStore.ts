@@ -1,25 +1,11 @@
 import { reactive, toRefs } from 'vue'
 import { Auth } from '@/helpers/auth'
-
-type User = {
-    id: number;
-    first_name: string;
-    last_name: string;
-    username: string;
-    email: string;
-    is_active: boolean;
-}
-
-interface AuthState {
-    user: User | null;
-    isAuthenticated: boolean;
-}
+import type { AuthState } from '@/types/User';
 
 const state = reactive<AuthState>({
     user: null,
     isAuthenticated: false
 });
-
 
 export function useAuth() {
     async function initializeAuth() {
@@ -43,19 +29,13 @@ export function useAuth() {
         }
     }
     async function loginUser(email: string, password: string) {
-        const url: string = 'http://localhost/api/v1/users/login';
         const data = {
             email: email as string,
             password: password as string
         }
-        const config = {
-            withCredentials: true as boolean,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
 
-        const { isAuthenticated, user } = await Auth.login(url, data, config);
+
+        const { isAuthenticated, user } = await Auth.login(data);
 
         if (isAuthenticated) {
             setIsAuthenticated(true);
@@ -70,7 +50,6 @@ export function useAuth() {
         if (value === false) {
             localStorage.removeItem('token');
         }
-        localStorage.setItem('isAuthenticated', JSON.stringify(value));
     }
 
     return {
